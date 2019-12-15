@@ -79,3 +79,8 @@ dev.off()
 png(filename = "files/results/MA_plot.png")
 plotMA(results(dds))
 dev.off()
+
+# Gene based Plot Counts
+png(filename = "files/results/Particular_gene_plot.png")
+plotCounts(dds, gene="ENSG00000103196", intgroup="condition")
+dev.off()
