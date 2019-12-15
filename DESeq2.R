@@ -70,3 +70,7 @@ png(filename = "files/results/PCA_plot.png")
 plotPCA(rlog(dds))
 dev.off()
 
+# Sparsity Plot
+png(filename = "files/results/Sparsity_plot.png")
+plotSparsity(estimateSizeFactors(dds))
+dev.off()
