@@ -84,3 +84,20 @@ dev.off()
 png(filename = "files/results/Particular_gene_plot.png")
 plotCounts(dds, gene="ENSG00000103196", intgroup="condition")
 dev.off()
+
+# Condition vs Count plot
+png(filename = "files/results/Condition-vs-Count_plot.png")
+ggplot(aes(condition, count)) + geom_boxplot(aes(fill=condition)) + scale_y_log10() + ggtitle("Condition vs Count")
+dev.off()
+
+# Volcano Plot
+png(filename = "files/results/Volcano_plot.png", width = 1024, height = 768)
+par(mfrow=c(1,1))
+res_by_padj <- results(dds)
+res_by_padj <- res_by_padj[order(res_by_padj$padj),]
+with(results(dds), plot(log2FoldChange, -log10(pvalue), pch=20, main="Volcano plot", xlim=c(-3,3)))
+with(subset(res_by_padj, padj<.01 ), points(log2FoldChange, -log10(pvalue), pch=20, col="red"))
+with(subset(res_by_padj, abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="orange"))
+with(subset(res_by_padj, padj<.01 & abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="green"))
+with(subset(res_by_padj, padj<.01 & abs(log2FoldChange)>1), textxy(log2FoldChange, -log10(pvalue), labs=row.names(res), cex=.8))
+dev.off()
