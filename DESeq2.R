@@ -60,4 +60,13 @@ colData = read.csv(meta_data_csv, row.names=1)
 dds = DESeqDataSetFromMatrix(countData=countData, colData=colData, design=~condition)
 dds = DESeq(dds)
 
+# Get results for the sample versus control, sort the file by p-value. 
+res = results(dds, contrast=c("condition", args[4], args[3]))
+res = res[order(res$pvalue),]
+write.csv(as.data.frame(res), file="files/results/DESeq2.csv")
+
+#PCA Plot
+png(filename = "files/results/PCA_plot.png")
+plotPCA(rlog(dds))
+dev.off()
 
