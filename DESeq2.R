@@ -74,3 +74,8 @@ dev.off()
 png(filename = "files/results/Sparsity_plot.png")
 plotSparsity(estimateSizeFactors(dds))
 dev.off()
+
+# MA Plot
+png(filename = "files/results/MA_plot.png")
+plotMA(results(dds))
+dev.off()
