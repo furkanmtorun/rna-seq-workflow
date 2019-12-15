@@ -14,16 +14,16 @@
 # +--------------------------------------------------+
 # Install and import required libraries & packages
 # +--------------------------------------------------+
-install.packages("dplyr")
-BiocManager::install("DESeq2")
-BiocManager::install("gage")
-BiocManager::install("pathview")
-BiocManager::install("gageData")
+# install.packages("dplyr")
+# install.packages("calibrate")
+# BiocManager::install("DESeq2")
 library(dplyr)
+library(ggplot2)
 library(DESeq2)
-library(gage)
-library(pathview)
-library(gageData)
+library(calibrate)
+library(pheatmap)
+library(gplots)
+library(RColorBrewer)
 
 
 # +--------------------------------------------------+
@@ -33,24 +33,31 @@ library(gageData)
 options(echo=FALSE)
 args<-commandArgs(TRUE)
 
-if (length(args)==0) {
-    print("At least one argument must be supplied!")
-} else if (length(args)==1) {
-    print("You have only one argument!")
-} else {
-    print("You have multiple arguments: ")
-    print(args)
+# Arguments order must be: counts_csv_file_path meta_data_csv_file_path sample_name_for_control sample_name_for_sample
+if (length(args) != 4) {
+    stop("At least four arguments must be supplied!")
 }
 
 
 # +--------------------------------------------------+
-# Set the environments and files
+# Set and define the files & DESeq2
 # +--------------------------------------------------+
-working_dir <- "argumentWorkingDirectory"
-setwd(working_dir)
+counts_csv <- args[1]
+meta_data_csv <- args[2]
 
+# Import countdata
+countData = read.csv(counts_csv, row.names=1) %>%
+    dplyr::select(-length) %>% 
+    as.matrix()
 
+# Filter data where you only have 0 or 1 read count across all samples.
+countData = countData[rowSums(countData)>1, ]
 
+# Import meta_data
+colData = read.csv(meta_data_csv, row.names=1)
 
+# Set up the DESeqDataSet Object and run the DESeq pipeline
+dds = DESeqDataSetFromMatrix(countData=countData, colData=colData, design=~condition)
+dds = DESeq(dds)
 
 
