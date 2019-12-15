@@ -101,3 +101,12 @@ with(subset(res_by_padj, abs(log2FoldChange)>1), points(log2FoldChange, -log10(p
 with(subset(res_by_padj, padj<.01 & abs(log2FoldChange)>1), points(log2FoldChange, -log10(pvalue), pch=20, col="green"))
 with(subset(res_by_padj, padj<.01 & abs(log2FoldChange)>1), textxy(log2FoldChange, -log10(pvalue), labs=row.names(res), cex=.8))
 dev.off()
+
+# Heatmap
+png(filename = "files/results/Heatmap.png")
+rld <- rlog(dds)
+topVarGenes <- head(order(rowVars(assay(rld)), decreasing=TRUE), 35)
+heatmap.2(assay(rld)[topVarGenes,], scale="row",
+          trace="none", dendrogram="both", margins=c(12,8),
+          col = colorRampPalette( rev(brewer.pal(9,"Blues")))(255))
+dev.off()
